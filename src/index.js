@@ -2,6 +2,7 @@
 import { detectVideoPlatform, extractQQVideoCid } from './utils/index.js';
 import { main as iqiyiHandler } from './utils/iqiyi.js';
 import { main as qqHandler } from './utils/qq.js';
+import { main as mgtvHandler } from './utils/mgtv.js';
 import { Hono } from 'hono';
 
 /**
@@ -10,6 +11,7 @@ import { Hono } from 'hono';
 const PLATFORM_HANDLERS = {
   iqiyi: iqiyiHandler,
   qq: qqHandler,
+  mgtv: mgtvHandler,
 };
 
 /**
@@ -27,6 +29,12 @@ const FORMATTERS = {
     videoType: '未知', // QQ数据中没有直接提供视频类型
     count: data.length,
     list: data
+  }),
+  mgtv: (data) => ({
+    platform: 'mgtv',
+    videoType: '未知',
+    count: data.length,
+    list: data
   })
 };
 
@@ -40,7 +48,7 @@ const extractPlatformParams = (url, platform) => {
   if (platform === 'qq') {
     return extractQQVideoCid(url);
   }
-  // 爱奇艺和优酷直接使用URL
+  // 爱奇艺、芒果和优酷直接使用URL
   return url;
 };
 
@@ -68,7 +76,6 @@ const getVideoData = async (url) => {
     
     // 4. 调用平台处理函数获取原始数据
     const rawData = await PLATFORM_HANDLERS[platform](params);
-    
     // 5. 转换为统一数据结构
     return FORMATTERS[platform](rawData);
   } catch (error) {
