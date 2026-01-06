@@ -3,6 +3,7 @@ import { detectVideoPlatform, extractQQVideoCid } from './utils/index.js';
 import { main as iqiyiHandler } from './utils/iqiyi.js';
 import { main as qqHandler } from './utils/qq.js';
 import { main as mgtvHandler } from './utils/mgtv.js';
+import { main as youkuHandler } from './utils/youku.js';
 import { Hono } from 'hono';
 
 /**
@@ -12,6 +13,7 @@ const PLATFORM_HANDLERS = {
   iqiyi: iqiyiHandler,
   qq: qqHandler,
   mgtv: mgtvHandler,
+  youku: youkuHandler,
 };
 
 /**
@@ -35,7 +37,13 @@ const FORMATTERS = {
     videoType: '未知',
     count: data.length,
     list: data
-  })
+  }),
+  youku: (data) => ({
+    platform: 'youku',
+    videoType: '未知',
+    count: data.length,
+    list: data
+  }),
 };
 
 /**
